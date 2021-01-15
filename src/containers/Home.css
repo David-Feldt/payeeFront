@@ -9,7 +9,7 @@
   }
   
   .Home .lander p {
-    color: #999;
+    color: rgb(78, 91, 161);
   }
 
   .Home .notes h4 {
@@ -21,5 +21,5 @@
     text-overflow: ellipsis;
   }
   .Home .notes p {
-    color: #666;
+    color: rgb(44, 43, 82);
   }
