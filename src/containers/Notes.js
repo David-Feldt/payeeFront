@@ -75,6 +75,7 @@ export default function Notes() {
     setIsLoading(true);
   
     try {
+      console.log(payeeName);
       await saveNote({
         content,
         payeeName
