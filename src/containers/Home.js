@@ -31,7 +31,7 @@ export default function Home() {
   }, [isAuthenticated]);
   
   function loadNotes() {
-    return API.get("notes", "/notes");
+    return API.get("notes", "/payee");
   }
 
   function renderNotesList(notes) {
