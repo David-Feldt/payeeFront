@@ -14,6 +14,7 @@ export default function Notes() {
     const history = useHistory();
     const [note, setNote] = useState(null);
     const [content, setContent] = useState("");
+    const [payeeName, setPayeeName] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
@@ -25,13 +26,11 @@ export default function Notes() {
     async function onLoad() {
       try {
         const note = await loadNote();
-        const { content, attachment } = note;
-
-        if (attachment) {
-          note.attachmentURL = await Storage.vault.get(attachment);
-        }
-
+        console.log(note);
+        const { content, payeeName } = note;
+        console.log(payeeName);
         setContent(content);
+        setPayeeName(payeeName);
         setNote(note);
       } catch (e) {
         onError(e);
@@ -76,13 +75,9 @@ export default function Notes() {
     setIsLoading(true);
   
     try {
-      if (file.current) {
-        attachment = await s3Upload(file.current);
-      }
-  
       await saveNote({
         content,
-        attachment: attachment || note.attachment
+        payeeName
       });
       history.push("/");
     } catch (e) {
@@ -121,31 +116,26 @@ export default function Notes() {
     <div className="Notes">
       {note && (
         <form onSubmit={handleSubmit}>
+          <FormGroup controlId="payeeName">
+          <ControlLabel>PayeeName</ControlLabel>
+
+            <FormControl
+              value={payeeName}
+      
+              type="text"
+              onChange={e => setPayeeName(e.target.value)}
+            />
+          </FormGroup>
+          
           <FormGroup controlId="content">
+          <ControlLabel>Content</ControlLabel>
             <FormControl
               value={content}
               componentClass="textarea"
               onChange={e => setContent(e.target.value)}
             />
           </FormGroup>
-          {note.attachment && (
-            <FormGroup>
-              <ControlLabel>Attachment</ControlLabel>
-              <FormControl.Static>
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={note.attachmentURL}
-                >
-                  {formatFilename(note.attachment)}
-                </a>
-              </FormControl.Static>
-            </FormGroup>
-          )}
-          <FormGroup controlId="file">
-            {!note.attachment && <ControlLabel>Attachment</ControlLabel>}
-            <FormControl onChange={handleFileChange} type="file" />
-          </FormGroup>
+          
           <LoaderButton
             block
             type="submit"

@@ -13,6 +13,7 @@ export default function NewNote() {
   const file = useRef(null);
   const history = useHistory();
   const [content, setContent] = useState("");
+  const [payeeName, setPayeeName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   function validateForm() {
@@ -37,10 +38,8 @@ export default function NewNote() {
   
     setIsLoading(true);
   
-    try {
-      const attachment = file.current ? await s3Upload(file.current) : null;
-  
-      await createNote({ content, attachment });
+    try {  
+      await createNote({ content, payeeName });
       history.push("/");
     } catch (e) {
       onError(e);
@@ -58,17 +57,20 @@ export default function NewNote() {
   return (
     <div className="NewNote">
       <form onSubmit={handleSubmit}>
+      <FormGroup controlId="file">
+          <ControlLabel>Payee Name</ControlLabel>
+          <FormControl onChange={e => setPayeeName(e.target.value)} type="text" value={payeeName} />
+        </FormGroup>
+        
         <FormGroup controlId="content">
+        <ControlLabel>Content</ControlLabel>
           <FormControl
             value={content}
             componentClass="textarea"
             onChange={e => setContent(e.target.value)}
           />
         </FormGroup>
-        <FormGroup controlId="file">
-          <ControlLabel>Attachment</ControlLabel>
-          <FormControl onChange={handleFileChange} type="file" />
-        </FormGroup>
+        
         <LoaderButton
           block
           type="submit"
